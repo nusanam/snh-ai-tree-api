@@ -126,6 +126,41 @@ npm test            # single run
 npm run test:watch  # watch mode
 ```
 
+#### Example of curl commands that can be used for testing
+```bash
+  # 1. Empty database
+  curl -s http://localhost:3000/api/tree
+
+  # 2. Create a root node
+  curl -s -X POST http://localhost:3000/api/tree -H "Content-Type: application/json" -d '{"label":
+  "root"}'
+
+  # 3. Create a child
+  curl -s -X POST http://localhost:3000/api/tree -H "Content-Type: application/json" -d '{"label":
+  "bear", "parent_id": 1}'
+
+  # 4. Create a grandchild
+  curl -s -X POST http://localhost:3000/api/tree -H "Content-Type: application/json" -d '{"label":
+  "cat", "parent_id": 2}'
+
+  # 5. Get the full nested tree
+  curl -s http://localhost:3000/api/tree
+
+  # 6. Error: missing label
+  curl -s -X POST http://localhost:3000/api/tree -H "Content-Type: application/json" -d '{}'
+
+  # 7. Error: nonexistent parent
+  curl -s -X POST http://localhost:3000/api/tree -H "Content-Type: application/json" -d '{"label":
+  "orphan", "parent_id": 999}'
+
+  # 8. Error: bad parent_id type
+  curl -s -X POST http://localhost:3000/api/tree -H "Content-Type: application/json" -d '{"label":
+  "bad", "parent_id": "abc"}'
+
+  # 9. Error: unknown route
+  curl -s http://localhost:3000/api/unknown
+```
+
 23 tests across two files covering:
 
 - All happy paths for both endpoints

@@ -125,6 +125,16 @@ describe("POST /api/tree", () => {
     expect(res.body.label).toBe("hello");
   });
 
+  it("strips dangerous HTML from label", async () => {
+    const res = await request(app)
+      .post("/api/tree")
+      .send({ label: "<script>alert('xss')</script>" });
+
+    expect(res.status).toBe(201);
+    expect(res.body.label).not.toContain("<");
+    expect(res.body.label).not.toContain(">");
+  });
+
   it("returns 400 when label is missing", async () => {
     const res = await request(app)
       .post("/api/tree")

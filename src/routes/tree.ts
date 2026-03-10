@@ -3,6 +3,14 @@ import Database from "better-sqlite3";
 import { getAllNodes, getNodeById, insertNode, buildTrees } from "../db";
 import { CreateNodeBody } from "../types";
 
+function sanitize(input: string): string {
+  return input
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 export function createTreeRouter(db: Database.Database): Router {
   const router = Router();
 
@@ -23,7 +31,7 @@ export function createTreeRouter(db: Database.Database): Router {
       return;
     }
 
-    const label = body.label.trim();
+    const label = sanitize(body.label.trim());
     const parentId: number | null = body.parent_id ?? null;
 
     if (parentId !== null && (typeof parentId !== "number" || !Number.isInteger(parentId))) {
